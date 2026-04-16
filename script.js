@@ -1,33 +1,47 @@
+function swapLang() {
+  let from = document.getElementById("fromLang");
+  let to = document.getElementById("toLang");
+
+  let temp = from.value;
+  from.value = to.value;
+  to.value = temp;
+}
+
+function copyText() {
+  const output = document.getElementById("outputText");
+
+  if (!output.value) return;
+
+  output.select();
+  document.execCommand("copy");
+}
+
 async function translateText() {
   const output = document.getElementById("outputText");
-  output.value = "Translating...";
+  const input = document.getElementById("inputText").value;
+
+  output.value = "Testing API...";
 
   try {
-    const input = document.getElementById("inputText").value;
-    const from = document.getElementById("fromLang").value;
-    const to = document.getElementById("toLang").value;
-
-    const key = "BkJ8Cp9EdA2qIMBX74CfJojvfTZ1KjZdBz2bV4YFhckTKU4qlZuuJQQJ99CDAC3pKaRXJ3w3AAAbACOG1IM7";
-    const endpoint = "https://api.cognitive.microsofttranslator.com/";
-    const region = "eastasia";
-
-    const url = `${endpoint}/translate?api-version=3.0&from=${from}&to=${to}`;
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Ocp-Apim-Subscription-Key": key,
-        "Ocp-Apim-Subscription-Region": region,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify([{ Text: input }])
-    });
-
+    const response = await fetch(
+  "https://ameerabbas.cognitiveservices.azure.com/translator/text/v3.0/translate?api-version=3.0&to=hi",
+  {
+    method: "POST",
+    headers: {
+      "Ocp-Apim-Subscription-Key": "91KpYcnQvLS8i2xYt4jg3YPMIvGREDDW2FTn2D4W2ugqcvDMmplyJQQJ99CDAC3pKaRXJ3w3AAAbACOG0j8J",
+      "Ocp-Apim-Subscription-Region": "eastasia",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify([{ Text: input }])
+  }
+);
     const data = await response.json();
-    output.value = data[0].translations[0].text;
+    console.log(data);
 
-  } catch (error) {
-    output.value = "Error connecting API";
-    console.error(error);
+    output.value = data[0]?.translations[0]?.text || "No result";
+
+  } catch (err) {
+    output.value = "Still failing";
+    console.error(err);
   }
 }
